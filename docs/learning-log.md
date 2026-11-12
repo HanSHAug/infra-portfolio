@@ -21,3 +21,10 @@
 - 배운 것: compose의 `depends_on: condition: service_healthy`는 DB가 접속을 받을 수 있을 때까지 앱 시작을 미룬다. 앱에서 DB 주소는 `localhost`가 아니라 서비스 이름 `db`다.
 - 막혔던 것: Docker Desktop의 WSL 연동이 꺼져 있어 Ubuntu에서 `docker`가 없었다. Settings → Resources → WSL integration에서 Ubuntu를 켰다.
 - 확인: `docker compose up -d --build` 후 health `UP`, 1건 등록 → `down`/`up` 후에도 조회됨(볼륨 `db-data`).
+
+## 4~5주차 (CI)
+
+- 배운 것: GitHub Actions의 `needs: test`로 테스트가 성공해야만 이미지 빌드가 돈다. `if:`로 main에 push할 때만 이미지를 올린다(PR이나 다른 브랜치는 테스트만).
+- 배운 것: GHCR 로그인에는 따로 만든 토큰이 아니라 Actions가 주는 `GITHUB_TOKEN`을 쓰고, 잡에 `packages: write` 권한을 준다. 이미지 이름은 소문자여야 해서 `${GITHUB_REPOSITORY,,}`로 바꿨다.
+- 경험: 테스트 하나를 일부러 깨뜨린 브랜치를 올려 빨간불(AssertionError at IncidentControllerTest.java:45)을 보고, revert 후 초록불로 돌아오는 것을 확인했다.
+- 확인: main push → test, build-and-push 모두 성공, 이미지 `ghcr.io/hanshaug/infra-portfolio:<sha>`와 `:latest`가 올라감.
